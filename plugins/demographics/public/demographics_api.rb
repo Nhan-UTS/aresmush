@@ -94,28 +94,26 @@ module AresMUSH
       
     # His/Her/Their
     def self.possessive_pronoun(char)
-      Demographics.gender_config(gender(char))['possessive_pronoun']
+      t("demographics.#{gender(char)}_possessive")
     end
 
     # He/She/They
     def self.subjective_pronoun(char)
-      Demographics.gender_config(gender(char))['subjective_pronoun']
+      t("demographics.#{gender(char)}_subjective")
     end
 
     # Him/Her/Them
     def self.objective_pronoun(char)
-      Demographics.gender_config(gender(char))['objective_pronoun']
+      t("demographics.#{gender(char)}_objective")
     end
       
     # Man/Woman/Person
     def self.gender_noun(char)
-      Demographics.gender_config(gender(char))['noun']
+      t("demographics.#{gender(char)}_noun")
     end
     
     
     def self.check_age(age)
-      return nil if !Demographics.all_demographics.include?('birthdate')
-      
       min_age = Global.read_config("demographics", "min_age")
       max_age = Global.read_config("demographics", "max_age")
       if (age > max_age || age < min_age)

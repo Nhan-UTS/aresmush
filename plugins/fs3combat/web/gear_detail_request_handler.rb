@@ -27,21 +27,15 @@ module AresMUSH
         end
         
         values = data.map { |key, value|  {
-          title: key.humanize.titleize,
+          title: key.titleize,
           detail: Website.format_markdown_for_html(FS3Combat.gear_detail(value).to_s)
           }
-        }        
-        
-        specials = GearSpecialInfo.new(data, type).specials.map { |name, effects| {
-          title: name,
-          effects: effects
-        }}
+        }
         
         {
           type: type.titleize,
           name: name.titleize,
-          values: values,
-          specials: specials
+          values: values
         }
       end
     end

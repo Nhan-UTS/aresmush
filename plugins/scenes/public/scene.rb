@@ -25,7 +25,6 @@ module AresMUSH
     attribute :content_warning
     
     collection :scene_poses, "AresMUSH::ScenePose"
-    collection :scene_likes, "AresMUSH::SceneLike"
     reference :scene_log, "AresMUSH::SceneLog"
     reference :plot, "AresMUSH::Plot"
     
@@ -118,24 +117,23 @@ module AresMUSH
     end
     
     def has_liked?(char)
-      self.scene_likes.any? { |s| s.character == char }
+      self.likers.include?(char)
     end
     
     def like(char)
       if (!self.has_liked?(char))
-        SceneLike.create(character: char, scene: self)
+        self.likers.add char
       end
     end
 
     def unlike(char)
       if (self.has_liked?(char))
-        like = char.scene_likes.select { |s| s.scene == self }.first
-        like.delete
+        self.likers.delete char
       end
     end
     
     def likes
-      self.scene_likes.count
+      self.likers.count
     end
     
     def url

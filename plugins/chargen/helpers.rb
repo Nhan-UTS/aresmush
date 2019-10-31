@@ -65,26 +65,24 @@ module AresMUSH
         char.update_demographic(k, v[:value])
       end
       
-      if (chargen_data[:demographics][:age])
-        age_or_bday = chargen_data[:demographics][:age][:value]
+      age_or_bday = chargen_data[:demographics][:age][:value]
 
-        # See if it's just an age.
-        if (age_or_bday.is_integer?)
-          age = age_or_bday.to_i
-          if (age != char.age)
-            age_error = Demographics.check_age(age)
-            if (age_error)
-              alerts << age_error
-            else
-              Demographics.set_random_birthdate(char, age)
-            end
+      # See if it's just an age.
+      if (age_or_bday.is_integer?)
+        age = age_or_bday.to_i
+        if (age != char.age)
+          age_error = Demographics.check_age(age)
+          if (age_error)
+            alerts << age_error
+          else
+            Demographics.set_random_birthdate(char, age)
           end
-        # Assume it's a birthdate string
-        else
-          result = Demographics.set_birthday(char, age_or_bday)
-          if (result[:error])
-            alerts << result[:error]
-          end
+        end
+      # Assume it's a birthdate string
+      else
+        result = Demographics.set_birthday(char, age_or_bday)
+        if (result[:error])
+          alerts << result[:error]
         end
       end
       

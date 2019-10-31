@@ -3,14 +3,13 @@ module AresMUSH
     class FindCmd
       include CommandHandler
 
-      attr_accessor :search_class, :name, :page
+      attr_accessor :search_class, :name
 
       def parse_args
         args = cmd.parse_args(ArgParser.arg1_equals_optional_arg2)
         
         self.search_class = titlecase_arg(args.arg1)
         self.name = trim_arg(args.arg2)
-        self.page = cmd.page
       end
       
       def required_args
@@ -38,7 +37,7 @@ module AresMUSH
           
         objects = objects.sort { |a,b| a.name_upcase <=> b.name_upcase}
         objects = objects.map { |r| "#{r.dbref.ljust(6)} #{r.name}"}
-        template = BorderedPagedListTemplate.new objects, self.page, 25, t('manage.find_results')
+        template = BorderedListTemplate.new objects, t('manage.find_results')
         client.emit template.render
       end
     end

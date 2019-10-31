@@ -2,6 +2,7 @@ module AresMUSH
   module FS3Combat
     class GearDetailTemplate < ErbTemplateRenderer
 
+
       attr_accessor :title, :list, :gear_type
       
       def initialize(list, title, gear_type)
@@ -20,8 +21,26 @@ module AresMUSH
       end
       
       def specials
-        info = GearSpecialInfo.new(self.list, self.gear_type)
-        info.specials.map { |name, effects| "%xh#{left(name, 20)}%xn%R%T#{effects.join("%R%T")}"}
+        if (self.gear_type == :weapon)
+          allowed_specials = []
+          self.list.each do |fields|
+            if (fields[0] == "allowed_specials")
+              allowed_specials = fields[1]
+            end
+          end
+          
+          specials = []
+          FS3Combat.weapon_specials.each do |k, v|
+            if (allowed_specials.include?(k))
+              special_title = left("#{k}:", 20)
+              effects = v.map { |k, v|  "#{k.titlecase}: #{v}" }.join("%R%T")
+              specials << "%xh#{special_title}%xn%R%T#{effects}"
+            end
+          end
+          specials
+        else
+          []
+        end
       end
     end
   end

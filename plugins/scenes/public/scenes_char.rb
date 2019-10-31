@@ -8,10 +8,7 @@ module AresMUSH
     attribute :pose_word_count, :type => DataType::Integer
     attribute :scene_home
     attribute :read_scenes, :type => DataType::Array, :default => []
-    attribute :scenes_participated_in, :type => DataType::Array, :default => []
-    attribute :scene_participation_count
-    
-    collection :scene_likes, "AresMUSH::SceneLike"
+    attribute :scene_participation_count, :type => DataType::Integer
   
     before_delete :remove_from_scenes
     
@@ -40,13 +37,10 @@ module AresMUSH
     def remove_from_scenes
       Scene.all.each do |s|
         Database.remove_from_set s.participants, self
-        if (!s.completed)
-          Database.remove_from_set s.invited, self
-          Database.remove_from_set s.watchers, self
-        end
+        Database.remove_from_set s.invited, self
+        Database.remove_from_set s.watchers, self
+        Database.remove_from_set s.likers, self
       end
-      
-      self.scene_likes.each { |l| l.delete }
     end
   end
 end

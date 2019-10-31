@@ -9,8 +9,7 @@ module AresMUSH
       end
       if (activity_type =~ /pose/)
         message = t('scenes.new_scene_activity', :id => scene.id)
-        watching_participants = scene.watchers.to_a & scene.participants.to_a
-        watching_participants.each do |w|
+        scene.watchers.each do |w|
           if (last_posed != w.name)
             Login.notify(w, :scene, message, scene.id, "", false)
           end
@@ -21,11 +20,6 @@ module AresMUSH
     def self.can_manage_scene?(actor, scene)
       return false if !actor
       actor.has_permission?("manage_scenes")
-    end
-    
-    def self.can_control_npcs?(actor)
-      return false if !actor
-      actor.has_permission?("control_npcs")
     end
     
     def self.scene_types
@@ -56,18 +50,10 @@ module AresMUSH
       return false
     end
     
-    def self.can_pose_char?(actor, char)
-      return true if char == actor
-      return true if AresCentral.is_alt?(actor, char)
-      (char.is_npc? && Scenes.can_control_npcs?(char))
-    end
-    
     def self.restart_scene(scene)
       Scenes.create_scene_temproom(scene)
       scene.update(completed: false)
       scene.update(was_restarted: true)
-      scene.update(last_activity: Time.now)
-      scene.watchers.replace scene.participants.to_a
       Scenes.new_scene_activity(scene, :status_changed, nil)
     end
     
@@ -137,15 +123,11 @@ module AresMUSH
 
       scene.update(completed: true)
       scene.update(date_completed: Time.now)
-      scene.invited.replace []
-      scene.watchers.replace []
       
       Scenes.new_scene_activity(scene, :status_changed, nil)
       
-      scene.participants.each do |char|
-        # Don't double-award luck or scene participation if we've already tracked 
-        # that they've participated in that scene.
-        if (!Scenes.participated_in_scene?(char, scene))
+      if (!scene.was_restarted)
+        scene.participants.each do |char|
           Scenes.handle_scene_participation_achievement(char, scene)
           if (FS3Skills.is_enabled?)
             FS3Skills.luck_for_scene(char, scene)
@@ -153,10 +135,6 @@ module AresMUSH
         end
       end
     end    
-    
-    def self.participated_in_scene?(char, scene)
-      char.scenes_participated_in.include?("#{scene.id}")
-    end
     
     def self.participants_and_room_chars(scene)
       participants = scene.participants.to_a
@@ -176,7 +154,6 @@ module AresMUSH
     end
     
     def self.is_participant?(scene, char)
-      return false if !char
       Scenes.participants_and_room_chars(scene).include?(char)
     end
     
@@ -307,10 +284,6 @@ module AresMUSH
           end
           log << formatted_pose
         elsif (pose.is_setpose?)
-          if (div_started)
-            log << "\n[[/div]]\n\n"
-            div_started = false
-          end
           log << "[[div class=\"scene-set-pose\"]]\n#{formatted_pose}\n[[/div]]\n\n"
         else
           if (div_started)
@@ -320,15 +293,12 @@ module AresMUSH
           log << formatted_pose
         end
         
-        if (!div_started)
-          if (Global.read_config("scenes", "include_pose_separator"))
-            log << "\n[[div class=\"pose-divider\"]][[/div]]\n"
-          end
+        if (Global.read_config("scenes", "include_pose_separator"))
+          log << "\n[[div class=\"pose-divider\"]][[/div]]\n"
         end
         
         log << "\n\n"
       end
-      
       if (div_started)
         log << "\n[[/div]]\n\n"
       end
@@ -475,18 +445,12 @@ module AresMUSH
         end
       end
     end
-        
+    
     def self.handle_scene_participation_achievement(char, scene)
-      return if Scenes.participated_in_scene?(char, scene)
-      
-      scenes = char.scenes_participated_in
-      scenes << "#{scene.id}"
-      char.update(scenes_participated_in: scenes)
-      count = scenes.count
-      
+      char.update(scene_participation_count: char.scene_participation_count + 1)
       Achievements.award_achievement(char, "scene_participant_#{scene.scene_type.downcase}")
       [ 1, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 ].reverse.each do |level|
-        if ( count >= level )
+        if ( char.scene_participation_count >= level )
           Achievements.award_achievement(char, "scene_participant", level)
           break
         end
@@ -638,9 +602,7 @@ module AresMUSH
         places: places,
         poses: scene.poses_in_order.map { |p| Scenes.build_scene_pose_web_data(p, viewer) },
         fs3_enabled: FS3Skills.is_enabled?,
-        fs3combat_enabled: FS3Combat.is_enabled?,
-        poseable_chars: Scenes.build_poseable_chars_data(scene, viewer),
-        pose_order_type: scene.room ? scene.room.pose_order_type : nil
+        fs3combat_enabled: FS3Combat.is_enabled?
       }
     end    
     
@@ -664,8 +626,7 @@ module AresMUSH
       {
         name: scene.location,
         description: scene.room ? Website.format_markdown_for_html(scene.room.expanded_desc) : nil,
-        scene_set: scene.room ? Website.format_markdown_for_html(scene.room.scene_set) : nil,
-        details: scene.room ? scene.room.details.map { |k, v| { name: k, desc: Website.format_markdown_for_html(v) } } : []
+        scene_set: scene.room ? Website.format_markdown_for_html(scene.room.scene_set) : nil
       }
     end
     
@@ -676,15 +637,6 @@ module AresMUSH
          name: name,
          time: Time.parse(time).rfc2822
          }}
-    end
-    
-    def self.build_poseable_chars_data(scene, enactor)
-      return [] if !enactor
-      scene.participants
-         .select { |p| Scenes.can_pose_char?(enactor, p) }
-         .sort_by { |p| [ p == enactor ? 0 : 1, p.name ]}
-         .map { |p| { id: p.id, name: p.name, icon: Website.icon_for_char(p) }}
-         
     end
     
     def self.recent_scenes

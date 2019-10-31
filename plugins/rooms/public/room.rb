@@ -15,7 +15,6 @@ module AresMUSH
     
     def clear_exits
       self.exits.each { |e| e.delete }
-      self.exits_in.each { |e| e.delete }
     end
     
     def grid_x
