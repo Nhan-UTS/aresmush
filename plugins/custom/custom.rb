@@ -12,10 +12,10 @@ module AresMUSH
  
     def self.get_cmd_handler(client, cmd, enactor)  
       case cmd.root
-        when "whisper"
-          return WhisperCmd  
-        when "pemit"
-          return PemitCmd
+      when "whisper"
+        return WhisperCmd  
+      when "pemit"
+        return PemitCmd
       end    
       return nil
     end

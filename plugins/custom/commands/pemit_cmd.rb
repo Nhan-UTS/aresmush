@@ -1,5 +1,5 @@
 module AresMUSH
-  module Scenes
+  module Custom
     class PemitCmd
       include CommandHandler
       
@@ -18,11 +18,12 @@ module AresMUSH
       def handle
         OnlineCharFinder.with_online_chars(self.names, client) do |results|
           results.each do |r|
-            nospoof = "%xc%% #{t('scenes.pemit_nospoof_from', :name => enactor_name)}%xn%R"
+            nospoof = "%xc%% #{t('custom.pemit_nospoof_from', :name => enactor_name)}%xn%R"
             r.client.emit "#{r.char.pose_autospace}#{nospoof}#{self.message}"
           end
         end
-
+        
+        nospoof = "%xc%% #{t('custom.pemit_nospoof_from', :name => enactor_name)}%xn%R"
         client.emit "#{enactor.pose_autospace}#{nospoof}#{self.message}"
 
       end

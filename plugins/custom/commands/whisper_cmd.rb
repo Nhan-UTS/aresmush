@@ -1,5 +1,5 @@
 module AresMUSH
-  module Scenes
+  module Custom
     class WhisperCmd
       include CommandHandler
       
@@ -24,12 +24,12 @@ module AresMUSH
           
           other_client = Login.find_client(model)
           if (!other_client)
-            client.emit_failure t('scenes.whisper_offline')
+            client.emit_failure t('custom.whisper_offline')
             return
           end
           
-          header = t('scenes.whisper_emit_header')
-          whisper = t('scenes.whisper_emit', :name => enactor_name, :target => model.name, :message => self.message)
+          header = t('custom.whisper_emit_header')
+          whisper = t('custom.whisper_emit', :name => enactor_name, :target => model.name, :message => self.message)
           other_client.emit "#{model.pose_autospace}#{header}%R#{whisper}"
           client.emit "#{enactor.pose_autospace}#{header}%R#{whisper}"
         end
