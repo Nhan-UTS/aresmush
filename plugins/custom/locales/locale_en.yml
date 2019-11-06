@@ -1,0 +1,8 @@
+---
+en:
+  custom:
+        whisper_offline: "That person is not connected via a MU client. You'll need to PM them."
+        whisper_emit: "%{name} to %{target}: %{message}"
+        whisper_emit_header: "%xc%% Private whisper:%xn"
+
+        pemit_nospoof_from: "Private emit from %{name}:"
