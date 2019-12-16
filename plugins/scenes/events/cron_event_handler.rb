@@ -61,7 +61,7 @@ module AresMUSH
             Global.logger.info "Deleting scene #{scene.id} - #{scene.title} completed #{scene.date_completed}"
             scene.delete
           elsif (elapsed_days > warn_days && !scene.deletion_warned)
-            message = t('scenes.scene_delete_warn', :id => scene.id, :title => scene.title)
+            message = t('scenes.scene_delete_warn', :id => scene.id, :title => scene.title, :url => scene.live_url)
             Mail.send_mail(scene.participant_names, t('scenes.scene_delete_warn_subject'), message, nil)
             scene.update(deletion_warned: true)
           end
@@ -80,7 +80,7 @@ module AresMUSH
       end
       
       def post_trending_scenes
-        recent_scenes = Scenes.recent_scenes.select { |s| s.likes > 0 && (Time.now - (s.date_shared || s.created_at) < 864000) }
+        recent_scenes = Scenes.all.select { |s| s.likes > 0 && (Time.now - (s.date_shared || s.created_at) < 864000) }
         trending = recent_scenes.sort_by { |s| -s.likes }[0, 10]
         
         return if trending.count < 1

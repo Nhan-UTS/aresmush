@@ -3,6 +3,8 @@ toc: 4 - Writing the Story
 summary: Starting scenes.
 order: 1
 tutorial: true
+aliases:
+- plot
 ---
 
 # Scenes
@@ -34,7 +36,7 @@ When you start a scene, you can create a temporary room or start one in the room
 
 A scene can either be open (anyone's invited) or private.  Scenes on the grid are open by default and scenes in RP Rooms private by default.  The scene's organizer can change the privacy setting. 
 
-> **Note:** Ares does not provide admins with a command to view private scenes.  However, be aware that any data transmitted to the server and/or stored in the database is accessible to the game owner and anyone they choose to share it with.
+> **Note:** Ares has no built-in commands to support admins spying on players.  Just as with any online service, though, **any** data transmitted to the server and/or stored in the database is ultimately accessible to the game owner and anyone they choose to share it with.  See [Privacy](/help/privacy).
 
 ## Joining Scenes
 
@@ -49,6 +51,8 @@ During the scene, you will use [Poses](/help/posing_tutorial) to write your part
 You can use [Pose Order](/help/pose_order) to help keep track of whose turn it is. This is a guide to help people take turns equitably, and is not meant as a strict turn order.
 
 You can edit and delete your poses through the web portal. From a MU client, you can also amend or replace your **prior pose** using `scene/replace` or `scene/typo`.  The typo version corrects it in the log but doesn't add a notification.
+
+In the web portal, you can pose from any character in the scene that you control.  That would include the character you're logged in with, any alts that are linked to your Ares player handle, and (for storytellers with the 'can_control_npcs' permission) NPCs.  Alts and NPCs must be added to the scene (by clicking Edit and updating the participant list) before you can pose from them.
 
 ![Live Scene Page Screenshot](https://aresmush.com/images/help-images/scene-live.png)
 
@@ -69,6 +73,10 @@ When a scene in a temp room stops, characters in that room are normally sent bac
 When a scene is over, you can choose to share the scene on the web portal.  Shared scenes are viewable by everyone and included on your character's personal scene archive on their profile page.
 
 > **Note:** Unshared scenes will be deleted at some point (determined by the game settings), so if you don't intend to share the scene you should be sure to download the scene log.
+
+## Plots
+
+Through the web portal, you can create "plots", which are a way to organize related scenes.  When editing a scene, you can select which plot it's a part of.  The plot page on the web portal will list all scenes you've linked to the plot. Plots can also have a description and a storyteller, who acts as a contact person for plot-related questions.
 
 ## Command Reference
 

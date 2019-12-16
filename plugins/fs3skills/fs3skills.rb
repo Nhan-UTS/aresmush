@@ -70,6 +70,8 @@ module AresMUSH
       case event_name
       when "CronEvent"
         return XpCronHandler
+      when "CharIdledOutEvent"
+        return CharIdledOutEventHandler
       end
       
       nil
@@ -79,6 +81,8 @@ module AresMUSH
       case request.cmd
       when "abilities"
         return AbilitiesRequestHandler
+      when "addJobRoll"
+        return AddJobRollRequestHandler
       when "addSceneRoll"
         return AddSceneRollRequestHandler
       when "learnAbility"
