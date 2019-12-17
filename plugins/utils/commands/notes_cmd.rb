@@ -16,7 +16,7 @@ module AresMUSH
       end
 
       def check_is_allowed
-        return nil if self.target == enactor_name
+        return nil if self.section == 'player' && self.target == enactor_name
         return nil if Utils.can_access_notes?(enactor)
         return t('dispatcher.not_allowed')
       end
@@ -25,6 +25,13 @@ module AresMUSH
         ClassTargetFinder.with_a_character(self.target, client, enactor) do |model|
           list = model.notes_section(self.section).map { |k, v| "%ld%R%xh#{k}%xn%R#{v}%R"}
           title = self.section == 'admin' ? t('notes.notes_admin_title', :name => model.name) : t('notes.notes_title', :name => model.name)
+          template = BorderedListTemplate.new list, title
+          client.emit template.render
+        end
+
+        ClassTargetFinder.with_a_character(self.target, client, enactor) do |model|
+          list = model.notes_section('story').map { |k, v| "%ld%R%xh#{k}%xn%R#{v}%R"}
+          title = t('notes.notes_story_title', :name => model.name)
           template = BorderedListTemplate.new list, title
           client.emit template.render
         end
