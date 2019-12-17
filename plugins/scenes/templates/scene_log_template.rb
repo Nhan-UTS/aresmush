@@ -14,7 +14,7 @@ module AresMUSH
       def poses
         poses = @scene.poses_in_order.to_a
         
-        if (@full_log)
+        if !(@full_log)
           poses = poses.select { |p| !p.is_ooc }
         else
           poses = poses[-@num_poses, @num_poses] || poses
