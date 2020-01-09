@@ -12,9 +12,11 @@ module AresMUSH
 
       def parse_args
         # First, break into 2 arguements, before+after the =
-        args = cmd.parse_args(ArgParser.arg1_equals_arg2)
+        args = cmd.parse_args(ArgParser.arg1_equals_optional_arg2)
 
         # Next, check if it's an "admin" note in the first part. If so, staff-side.
+
+        return nil if !(args.arg2)
 
         if (args.arg1.include?("admin") )
           self.target = args.arg1.first("/")
