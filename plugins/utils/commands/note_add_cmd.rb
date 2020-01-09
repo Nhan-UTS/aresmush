@@ -16,19 +16,17 @@ module AresMUSH
 
         # Next, check if it's an "admin" note in the first part. If so, staff-side.
 
-        if (args.arg2)
-          if (args.arg1.include?("admin") )
-            self.target = args.arg1.first("/")
-            self.section = 'admin'
-            self.name = titlecase_arg(args.arg2.first("/"))
-            self.text = trim_arg(args.arg2.rest("/"))
+        if (args.arg1.include?("admin") )
+          self.target = args.arg1.first("/")
+          self.section = 'admin'
+          self.name = titlecase_arg(args.arg2.first("/"))
+          self.text = trim_arg(args.arg2.rest("/"))
 
-          else (args.arg2.include?("/"))
-            self.target = titlecase_arg(args.arg1)
-            self.section = 'story'
-            self.name = titlecase_arg(args.arg2.first("/"))
-            self.text = trim_arg(args.arg2.rest("/"))
-          end
+        elsif (args.arg2.include?("/"))
+          self.target = titlecase_arg(args.arg1)
+          self.section = 'story'
+          self.name = titlecase_arg(args.arg2.first("/"))
+          self.text = trim_arg(args.arg2.rest("/"))
 
         else
           self.target = enactor_name
