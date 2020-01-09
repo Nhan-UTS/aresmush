@@ -5,9 +5,9 @@ module AresMUSH
 
 # Adding a new "section" to notes ~ skew Nov-2019
 # Usage:
-# note/delete title=text - del note on yourself (note to self!)
-# note/delete player=title/txt - del note on a player, they can see it.
-# note/delete player/admin=title/txt - del an admin note on player, only staff can see it.
+# note/delete title - del note on yourself (note to self!)
+# note/delete player=title - del story note on a player, they can see it.
+# note/delete player/admin=title - del an admin note on player.
       
       attr_accessor :name, :target, :section
 
@@ -20,20 +20,17 @@ module AresMUSH
         if (args.arg1.include?("admin") )
           self.target = args.arg1.first("/")
           self.section = 'admin'
-          self.name = titlecase_arg(args.arg2.first("/"))
-          self.text = trim_arg(args.arg2.rest("/"))
+          self.name = titlecase_arg(args.arg2)
 
-        elsif (args.arg2.include?("/"))
+        elsif (args.arg2)
           self.target = titlecase_arg(args.arg1)
           self.section = 'story'
-          self.name = titlecase_arg(args.arg2.first("/"))
-          self.text = trim_arg(args.arg2.rest("/"))
+          self.name = titlecase_arg(args.arg2)
 
         else
           self.target = enactor_name
           self.section = 'player' 
           self.name = titlecase_arg(args.arg1)
-          self.text = trim_arg(args.arg2)
         end
       end
       
