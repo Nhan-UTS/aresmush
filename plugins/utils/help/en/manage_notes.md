@@ -7,12 +7,12 @@ aliases:
 ---
 # Admin and Story Notes
 
-Admins with the `manage_notes` permission can set notes on players that are only visible to other admins.  These notes are stored separately from the player-managed notes that they set themselves.
+Admins with the `manage_notes` permission can set notes on players.  There are three sections of notes:
 
-Admins can also add "story notes", which can only be added by an admin, but will be visible to the player when they use the `notes` command.
+* Player - a player's personal notes, not visible to admins.
+* Shared - notes shared between admin and the player.
+* Admin - notes visible only to admins
 
-`notes <player>` - Shows a player's admin notes.
-`note/add <player>=<note name>/<text>` - Create or update a story note.
-`note/add <player>/admin=<note name>/<text>` - Create or update an admin note.
-`note/delete <player>=<note name>` - Deletes a story note.
-`note/delete <player>/admin=<note name>` - Deletes an admin note.
+`notes <player>` - Views someone's notes.
+`notes/set <player>/<section>=<notes>` - Sets notes.
+`notes/edit <player>/<section>` - Grabs notes into your edit buffer.  (See [Edit Feature](/help/edit)).
