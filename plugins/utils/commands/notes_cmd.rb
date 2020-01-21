@@ -43,13 +43,6 @@ module AresMUSH
           template = BorderedDisplayTemplate.new text, title
           client.emit template.render
         end
-
-        ClassTargetFinder.with_a_character(self.target, client, enactor) do |model|
-          list = model.notes_section('story').map { |k, v| "%ld%R%xh#{k}%xn%R#{v}%R"}
-          title = t('notes.notes_story_title', :name => model.name)
-          template = BorderedListTemplate.new list, title
-          client.emit template.render
-        end
       end
     end
   end
